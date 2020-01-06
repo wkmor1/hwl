@@ -1,0 +1,67 @@
+---
+title: "Window Lists"
+output:
+  html_document:
+    theme: simplex
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r, echo = FALSE}
+get_lists <- function(region, observer) {
+  lists_data <-
+    xml2::read_html(sprintf("https://ebird.org/region/%s/activity", region))
+  obsvrs <- rvest::html_table(lists_data, TRUE)[[1]][["Observer"]]
+  y2020 <- grepl("2020", rvest::html_table(lists_data, TRUE)[[1]][["Date"]])
+  lists <-
+    rvest::html_nodes(lists_data, ".table a")[obsvrs == observer & y2020]
+  lists <- rvest::html_attr(lists, "href")
+  lists <- stats::setNames(as.list(lists), basename(lists))
+
+  for (i in basename(unlist(lists))) {
+    if (i %in% list.files(paste0("lists/", observer))) {
+      next
+    } else {
+      lists[[i]] <- xml2::read_html(paste0("https://ebird.org/checklist/", i))
+      comments <- rvest::html_text(rvest::html_nodes(lists[[i]], ".u-stack-xs"))
+      if (any(grepl("HWL", comments))) {
+        lists[[i]] <-
+          rvest::html_text(rvest::html_nodes(lists[[i]], "li .Heading-main"))
+        writeLines(lists[[i]], paste("lists", observer, i, sep = "/"))
+      } else {
+        writeLines("", paste("lists", observer, i, sep = "/"))
+      }
+    }
+  }
+}
+
+get_lists("AU-VIC-MOR", "Michael  Livingston")
+get_lists("FI-18", "Will Morris")
+
+wm <- lapply(list.files("lists/Will Morris", full.names = TRUE), readLines)
+wm <- unlist(wm)
+wm <- unique(wm)
+wm <- wm[!!nchar(wm)]
+wm <- rev(wm)
+
+ml <- lapply(list.files("lists/Michael  Livingston", full.names = TRUE), readLines)
+ml <- unlist(ml)
+ml <- unique(ml)
+ml <- ml[!!nchar(ml)]
+ml <- rev(ml)
+
+tab <- matrix("", max(length(wm), length(ml)), 2)
+tab[1, ] <- c(length(wm), length(ml)) - 1
+tab[seq(1, length(wm)), 1] <- wm
+tab[seq(1, length(ml)), 2] <- ml
+```
+
+```{r, echo = FALSE}
+knitr::kable(
+  tab,
+  col.names = paste(c("WM", "ML"), c(length(wm), length(ml)), sep = ": ")
+)
+```
+

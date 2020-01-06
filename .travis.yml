@@ -1,0 +1,18 @@
+language: R
+
+install:
+  - Rscript -e 'install.packages(c("rvest", "rmarkdown"))'
+
+script:
+  - git clone --branch=gh-pages https://github.com/wkmor1/hwl.git
+  - cp -R hwl/lists/. lists/
+  - rm -rf hwl
+  - Rscript -e 'rmarkdown::render("index.Rmd")'
+
+deploy:
+  provider: pages
+  skip_cleanup: true
+  github_token: $GITHUB_TOKEN
+  keep_history: true
+  on:
+    branch: master
