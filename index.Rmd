@@ -26,7 +26,7 @@ get_lists <- function(region, observer) {
     } else {
       lists[[i]] <- xml2::read_html(paste0("https://ebird.org/checklist/", i))
       comments <- rvest::html_text(rvest::html_nodes(lists[[i]], ".u-stack-xs"))
-      if (any(grepl("HWL", comments))) {
+      if (any(grepl("HWL", toupper(comments)))) {
         lists[[i]] <-
           rvest::html_text(rvest::html_nodes(lists[[i]], "li .Heading-main"))
         writeLines(lists[[i]], paste("lists", observer, i, sep = "/"))
