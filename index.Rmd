@@ -69,7 +69,7 @@ tab[seq(1, length(nc)), 2] <- nc
 ```{r, echo = FALSE}
 knitr::kable(
   tab,
-  col.names = paste(c("WM", "ML", NC), c(length(wm), length(ml), length(nc)), sep = ": ")
+  col.names = paste(c("WM", "ML", "NC"), c(length(wm), length(ml), length(nc)), sep = ": ")
 )
 ```
 
