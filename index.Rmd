@@ -57,7 +57,7 @@ ml <- rev(ml)
 nc <- lapply(list.files("lists/Natasha Cadenhead", full.names = TRUE), readLines)
 nc <- unlist(nc)
 nc <- unique(nc)
-nc <- ml[!!nchar(nc)]
+nc <- nc[!!nchar(nc)]
 nc <- rev(nc)
 
 tab <- matrix("", max(length(wm), length(ml), length(nc)), 3)
