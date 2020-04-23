@@ -60,7 +60,7 @@ nc <- unique(nc)
 nc <- ml[!!nchar(nc)]
 nc <- rev(nc)
 
-tab <- matrix("", max(length(wm), length(ml), length(nc)), 2)
+tab <- matrix("", max(length(wm), length(ml), length(nc)), 3)
 tab[1, ] <- c(length(wm), length(ml), length(nc)) - 1
 tab[seq(1, length(wm)), 1] <- wm
 tab[seq(1, length(ml)), 2] <- ml
