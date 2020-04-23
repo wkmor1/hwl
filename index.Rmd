@@ -19,19 +19,20 @@ get_lists <- function(region, observer) {
     rvest::html_nodes(lists_data, ".table a")[obsvrs == observer & y2020]
   lists <- rvest::html_attr(lists, "href")
   lists <- stats::setNames(as.list(lists), basename(lists))
-
-  for (i in basename(unlist(lists))) {
-    if (i %in% list.files(paste0("lists/", observer))) {
-      next
-    } else {
-      lists[[i]] <- xml2::read_html(paste0("https://ebird.org/checklist/", i))
-      comments <- rvest::html_text(rvest::html_nodes(lists[[i]], ".u-stack-xs"))
-      if (any(grepl("HWL", toupper(comments)))) {
-        lists[[i]] <-
-          rvest::html_text(rvest::html_nodes(lists[[i]], "li .Heading-main"))
-        writeLines(lists[[i]], paste("lists", observer, i, sep = "/"))
+  if (length(lists)) {
+    for (i in basename(unlist(lists))) {
+      if (i %in% list.files(paste0("lists/", observer))) {
+        next
       } else {
-        writeLines("", paste("lists", observer, i, sep = "/"))
+        lists[[i]] <- xml2::read_html(paste0("https://ebird.org/checklist/", i))
+        comments <- rvest::html_text(rvest::html_nodes(lists[[i]], ".u-stack-xs"))
+        if (any(grepl("HWL", toupper(comments)))) {
+          lists[[i]] <-
+            rvest::html_text(rvest::html_nodes(lists[[i]], "li .Heading-main"))
+          writeLines(lists[[i]], paste("lists", observer, i, sep = "/"))
+        } else {
+          writeLines("", paste("lists", observer, i, sep = "/"))
+        }
       }
     }
   }
@@ -39,6 +40,7 @@ get_lists <- function(region, observer) {
 
 get_lists("AU-VIC-MOR", "Michael  Livingston")
 get_lists("FI-18", "Will Morris")
+get_lists("AU-QLD-BRI", "Natasha Cadenhead")
 
 wm <- lapply(list.files("lists/Will Morris", full.names = TRUE), readLines)
 wm <- unlist(wm)
