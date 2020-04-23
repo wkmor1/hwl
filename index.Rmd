@@ -52,16 +52,23 @@ ml <- unique(ml)
 ml <- ml[!!nchar(ml)]
 ml <- rev(ml)
 
-tab <- matrix("", max(length(wm), length(ml)), 2)
-tab[1, ] <- c(length(wm), length(ml)) - 1
+nc <- lapply(list.files("lists/Natasha Cadenhead", full.names = TRUE), readLines)
+nc <- unlist(nc)
+nc <- unique(nc)
+nc <- ml[!!nchar(nc)]
+nc <- rev(nc)
+
+tab <- matrix("", max(length(wm), length(ml), length(nc)), 2)
+tab[1, ] <- c(length(wm), length(ml), length(nc)) - 1
 tab[seq(1, length(wm)), 1] <- wm
 tab[seq(1, length(ml)), 2] <- ml
+tab[seq(1, length(nc)), 2] <- nc
 ```
 
 ```{r, echo = FALSE}
 knitr::kable(
   tab,
-  col.names = paste(c("WM", "ML"), c(length(wm), length(ml)), sep = ": ")
+  col.names = paste(c("WM", "ML", "NC"), c(length(wm), length(ml), length(nc)), sep = ": ")
 )
 ```
 
