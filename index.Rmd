@@ -13,10 +13,10 @@ knitr::opts_chunk$set(echo = TRUE)
 get_lists <- function(region, observer) {
   lists_data <-
     xml2::read_html(sprintf("https://ebird.org/region/%s/activity", region))
-  obsvrs <- rvest::html_table(lists_data, TRUE)[[1]][["Observer"]]
-  y2020 <- grepl("2020", rvest::html_table(lists_data, TRUE)[[1]][["Date"]])
+  lists_data <- rvest::html_node(lists_data, "#place-main-content-results")
+  obsvrs <- trimws(rvest::html_text(rvest::html_nodes(lists_data, "h3")))
   lists <-
-    rvest::html_nodes(lists_data, ".table a")[obsvrs == observer & y2020]
+    rvest::html_nodes(lists_data, "a.Meta-label")[obsvrs == observer]
   lists <- rvest::html_attr(lists, "href")
   lists <- stats::setNames(as.list(lists), basename(lists))
   if (length(lists)) {
